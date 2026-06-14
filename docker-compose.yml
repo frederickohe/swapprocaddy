@@ -1,6 +1,16 @@
-# Central reverse proxy for the Swappro backend stack.
-# Create the shared network once: docker network create caddy
-# Start after ../swapbackend is up: docker compose up -d
+# Central reverse proxy for the Swappro stack.
+# Expected layout on the VPS (sibling repos):
+#   systems/swapbackend
+#   systems/swapprocaddy
+#   systems/swapsite
+#
+# Create the shared network once: ./setup-networks.sh  (or: docker network create swappro)
+# Start order:
+#   1. cd ../swapbackend && docker compose up -d
+#   2. cd ../swapprocaddy && docker compose up -d
+#
+# DNS A records → VPS IP (13.140.185.135):
+#   swappro.store, www, api, db, portainer
 
 services:
   caddy:
@@ -14,16 +24,31 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../swapsite:/srv/www:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - caddy
+      - swappro
+    depends_on:
+      - portainer
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: swappro_portainer
+    restart: unless-stopped
+    command: -H unix:///var/run/docker.sock --trusted-origins portainer.swappro.store
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - swappro
 
 volumes:
   caddy_data:
   caddy_config:
+  portainer_data:
 
 networks:
-  caddy:
+  swappro:
     external: true
-    name: caddy
+    name: swappro

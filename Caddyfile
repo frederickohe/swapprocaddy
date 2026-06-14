@@ -1,9 +1,21 @@
-# Swappro backend — Caddy entrypoint
-# Container DNS names must match container_name in ../swapbackend/docker-compose.yml.
-# TLS: Let's Encrypt (automatic). Point api/db.swappro.store at this VPS before starting.
+# Swappro — Caddy entrypoint
+# Container DNS names must match container_name in docker-compose files.
+# TLS: Let's Encrypt (automatic). Point all *.swappro.store A records at this VPS before starting.
 
 {
 	email {$CADDY_ACME_EMAIL:admin@useswappro.com}
+}
+
+# Static marketing site (../swapsite mounted at /srv/www)
+www.swappro.store {
+	root * /srv/www
+	encode gzip
+	file_server
+}
+
+# Redirect apex to www
+swappro.store {
+	redir https://www.swappro.store{uri} permanent
 }
 
 api.swappro.store {
@@ -16,6 +28,14 @@ api.swappro.store {
 
 db.swappro.store {
 	reverse_proxy swappro_pgadmin:80
+
+	request_body {
+		max_size 50MB
+	}
+}
+
+portainer.swappro.store {
+	reverse_proxy swappro_portainer:9000
 
 	request_body {
 		max_size 50MB
