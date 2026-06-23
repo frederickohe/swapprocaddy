@@ -49,3 +49,23 @@ https://www.swappro.store
 https://api.swappro.store
 https://db.swappro.store
 https://portainer.swappro.store
+
+CI/CD (GitHub Actions)
+----------------------
+Each repo deploys on push to `main` via `.github/workflows/deploy.yml`.
+
+Server paths and scripts:
+  /var/www/swapsite/scripts/deploy.sh      → git pull + restart Caddy
+  /var/www/swapbackend/scripts/deploy.sh   → git pull + docker compose up --build -d
+  /var/www/swapprocaddy/scripts/deploy.sh  → git pull + docker compose up -d
+
+One-time GitHub secrets (all three repos):
+  DEPLOY_HOST     = 13.140.185.135
+  DEPLOY_USER     = deploy
+  DEPLOY_SSH_KEY  = private key from ~/.swappro-deploy/github_actions_deploy
+
+After `gh auth login`, run from swapprocaddy:
+  powershell -ExecutionPolicy Bypass -File scripts/setup-github-secrets.ps1
+
+Manual deploy on server:
+  bash /var/www/<repo>/scripts/deploy.sh
