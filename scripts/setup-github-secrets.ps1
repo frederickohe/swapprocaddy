@@ -19,7 +19,7 @@ if (-not (Test-Path $keyPath)) {
 }
 
 $privateKey = Get-Content -Raw $keyPath
-$repos = @("swapsite", "swapbackend", "swapprocaddy")
+$repos = @("swapsite", "swapbackend", "swapprocaddy", "swapadmin")
 $owner = "frederickohe"
 
 foreach ($repo in $repos) {
