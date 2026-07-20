@@ -5,12 +5,13 @@ Server layout (/var/www):
   swapbackend/
   swapprocaddy/    ← run setup scripts from here
   swapsite/
+  swapadmin/
 
 Prerequisites
 -------------
 - Docker + Docker Compose installed
 - DNS A records for all hosts → VPS public IP:
-    swappro.store, www, api, db, portainer
+    swappro.store, www, admin, api, db, portainer
 - Ports 80 and 443 open on the firewall
 
 One-time setup
@@ -46,6 +47,7 @@ cd ../swapprocaddy && docker compose up -d
 Verify
 ------
 https://www.swappro.store
+https://admin.swappro.store
 https://api.swappro.store
 https://db.swappro.store
 https://portainer.swappro.store
@@ -56,10 +58,11 @@ Each repo deploys on push to `main` via `.github/workflows/deploy.yml`.
 
 Server paths and scripts:
   /var/www/swapsite/scripts/deploy.sh      → git pull + restart Caddy
+  /var/www/swapadmin/scripts/deploy.sh     → git pull + npm build + restart Caddy
   /var/www/swapbackend/scripts/deploy.sh   → git pull + docker compose up --build -d
   /var/www/swapprocaddy/scripts/deploy.sh  → git pull + docker compose up -d
 
-One-time GitHub secrets (all three repos):
+One-time GitHub secrets (all four repos):
   DEPLOY_HOST     = 13.140.185.135
   DEPLOY_USER     = deploy
   DEPLOY_SSH_KEY  = private key from ~/.swappro-deploy/github_actions_deploy

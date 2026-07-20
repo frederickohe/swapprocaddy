@@ -18,6 +18,14 @@ swappro.store {
 	redir https://www.swappro.store{uri} permanent
 }
 
+# Admin portal (../swapadmin/dist mounted at /srv/admin)
+admin.swappro.store {
+	root * /srv/admin
+	encode gzip
+	try_files {path} /index.html
+	file_server
+}
+
 api.swappro.store {
 	reverse_proxy swappro_backend:3090
 

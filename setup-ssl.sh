@@ -21,6 +21,7 @@ CADDY_CONTAINER="${CADDY_CONTAINER:-swappro-caddy}"
 DOMAINS=(
   swappro.store
   www.swappro.store
+  admin.swappro.store
   api.swappro.store
   db.swappro.store
   portainer.swappro.store

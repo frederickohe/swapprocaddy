@@ -10,7 +10,7 @@
 #   2. cd ../swapprocaddy && docker compose up -d
 #
 # DNS A records → VPS IP (13.140.185.135):
-#   swappro.store, www, api, db, portainer
+#   swappro.store, www, api, admin, db, portainer
 
 services:
   caddy:
@@ -25,6 +25,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ../swapsite:/srv/www:ro
+      - ../swapadmin/dist:/srv/admin:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:
